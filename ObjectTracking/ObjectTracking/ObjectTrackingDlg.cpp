@@ -111,7 +111,7 @@ void CObjectTrackingDlg::DrawImage()
 	GetDlgItem(IDC_PICTURE_VIEW)->GetClientRect(&rect);
 
 	SetStretchBltMode(dc.GetSafeHdc(), COLORONCOLOR);
-	StretchDIBits(dc.GetSafeHdc(), 0, 0, rect.Width(), rect.Height(), 0, 0, m_matImage.cols, m_matImage.rows, m_matImage.data, m_pBitmapInfo, DIB_RGB_COLORS, SRCCOPY);
+	StretchDIBits(dc.GetSafeHdc(), 0, 0, rect.Width(), rect.Height(), 0, 0, controller.GetWidth(), controller.GetHeight(), controller.GetImage().data, m_pBitmapInfo, DIB_RGB_COLORS, SRCCOPY);
 }
 
 BEGIN_MESSAGE_MAP(CObjectTrackingDlg, CDialogEx)
@@ -190,8 +190,6 @@ HCURSOR CObjectTrackingDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-
-
 void CObjectTrackingDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
 	// TODO: Add your message handler code here and/or call default
@@ -209,15 +207,12 @@ void CObjectTrackingDlg::OnBnClickedBtnImgLoad()
 	if (fileDlg.DoModal() == IDOK)
 	{
 		CString path = fileDlg.GetPathName();
+		if (controller.LoadImage(std::string(CT2A(path))))
+		{
+			CreateBitmapInfo(controller.GetWidth(), controller.GetHeight(), controller.GetBpp() * 8);
 
-		CT2CA pszString(path);
-		std::string strPath(pszString);
-
-		m_matImage = cv::imread(strPath, cv::IMREAD_UNCHANGED);
-
-		CreateBitmapInfo(m_matImage.cols, m_matImage.rows, m_matImage.channels() * 8);
-
-		DrawImage();
+			DrawImage();
+		}
 	}
 }
 
@@ -225,7 +220,7 @@ void CObjectTrackingDlg::OnBnClickedBtnImgSave()
 {
 	CFileDialog fileDlg(FALSE, _T("jpg"), NULL, OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST, _T("image file(*.jpg;*.bmp;*.png;)|*.jpg;*.bmp;*.png;|All Files(*.*)|*.*||"));
 	
-	if (m_matImage.empty())
+	if (controller.GetImage().empty())
 	{
 		AfxMessageBox(_T("이미지를 못불러왔져염"));
 		return;
@@ -234,12 +229,8 @@ void CObjectTrackingDlg::OnBnClickedBtnImgSave()
 	if (fileDlg.DoModal() == IDOK) 
 	{
 		CString path = fileDlg.GetPathName();
-		CT2CA pszString(path);
-		std::string strPath(pszString);
-
-		cv::imwrite(strPath, m_matImage);
+		controller.SaveImage(std::string(CT2A(path)));
 	}
-
 }
 
 void CObjectTrackingDlg::OnDestroy()

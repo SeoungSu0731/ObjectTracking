@@ -39,6 +39,12 @@
     <ClInclude Include="ImageLibrary.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectTrackingModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectTrackingController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ObjectTracking.cpp">
@@ -49,6 +55,12 @@
     </ClCompile>
     <ClCompile Include="ObjectTrackingDlg.cpp">
       <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectTrackingModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectTrackingController.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
