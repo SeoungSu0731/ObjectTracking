@@ -1,0 +1,25 @@
+name: MFC CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest  # Windows 환경에서 실행
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Restore NuGet Packages (Optional)
+      run: nuget restore ObjectTracking.sln  # 필요 시 사용
+
+    - name: Build Solution (C++17, Debug)
+      run: msbuild ObjectTracking.sln /p:Configuration=Debug /p:Platform=x64 /p:AdditionalOptions="/std:c++17"
